@@ -30,7 +30,7 @@ app.use(stockRoute)
 
 const http = require('http')
 
-const port = 3001
+const port = 3000
 
 app.use(function(req, res, next) {
     res.status(404);
