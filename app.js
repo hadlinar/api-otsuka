@@ -6,6 +6,9 @@ const app = express();
 const pnRoute = require('./route/PN')
 const stockRoute = require('./route/Stock')
 
+const userRoute = require('./route-ediscount/User')
+const loginRoute = require('./route-ediscount/Login')
+
 app.use(compression())
 app.use(express.json());
 app.use(cors());
@@ -27,6 +30,9 @@ app.use(function (req, res, next) {
 
 app.use(pnRoute)
 app.use(stockRoute)
+
+app.use(userRoute)
+app.use(loginRoute)
 
 const http = require('http')
 

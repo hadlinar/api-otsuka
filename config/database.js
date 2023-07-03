@@ -8,4 +8,13 @@ const pool = new Pool({
   port: 5432,
 })
 
-module.exports = pool;
+
+const pool2 = new Pool({
+  user: 'tekinfo',
+  host: '170.1.70.67',
+  database: 'ediscount',
+  password: 'apps2022!',
+  port: 5432,
+})
+
+module.exports = { pool, pool2 };
