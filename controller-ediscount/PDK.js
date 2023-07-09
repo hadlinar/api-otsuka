@@ -18,7 +18,6 @@ class PDK {
             let query = `SELECT * 
             FROM trn_pdk
             WHERE branch_id = '${branch}' AND kategori_otsuka = '${cat}' AND user_approve_${role} IS NOT NULL AND final_status IS NOT NULL`
-            console.log(query)
             results = await db.pool2.query(query).catch(console.log)
         } 
         if (cat == null) {
@@ -32,7 +31,6 @@ class PDK {
             let query = `SELECT * 
             FROM trn_pdk
             WHERE branch_id = '${branch}' AND kategori_otsuka = '${cat}' AND user_approve_6 IS NOT NULL AND final_status IS NOT NULL`
-            console.log(query)
             results = await db.pool2.query(query).catch(console.log)
         }
         else {
