@@ -5,18 +5,38 @@ const jwt = require('jsonwebtoken')
 
 router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
     
-    jwt.verify(req.token, process.env.SECRET_KEY,(err,authData)=>{
+    jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
         try {
-            let user = new User().user();
-            user.then(function(result) {
-                res.status(200).json({
-                    "message": "ok",
-                    "result": result.rows[0]
+            const user = await new User().user(authData.username);
+            if (user.rows.length === 0) {
+                res.status(504).json({
+                    error: "User not found"
                 })
-                
-            })
-        } catch(e) {
-
+            } else {
+                if (user.rows[0].branch_id == 0) {
+                    const userOI = await new User().userOI(user.rows[0].role_id, authData.username)
+                    if(userOI.rows != 0) { 
+                        res.status(200).json({
+                            "message": "ok",
+                            "result": userOI.rows[0]
+                        })
+                    } else {
+                        res.status(504).json({
+                            error: "User not found"
+                        })
+                    }
+                } else {
+                    res.status(200).json({
+                        "message": "ok",
+                        "result": user.rows[0]
+                    })
+                }
+            }
+        } catch(err) {
+            console.log(err);
+            res.status(500).json({
+                error: "Database error",
+            });
         }
     });
 });
