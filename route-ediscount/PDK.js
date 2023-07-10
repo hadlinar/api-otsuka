@@ -116,7 +116,7 @@ router.post(`/otsuka/ediscount/reject/:id`, verifyToken, (req,res) => {
            });
         }
     });
-});
+})
 
 function verifyToken(req, res, next) { 
     const bearerHearder = req.headers['authorization'];

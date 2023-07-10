@@ -1,7 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const User = require('../controller-ediscount/User');
+const express = require("express")
+const router = express.Router()
+const User = require('../controller-ediscount/User')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const db = require('../config/database.js')
 
 router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
     
@@ -39,6 +41,74 @@ router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
             });
         }
     });
+});
+
+router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) => {
+    const password = req.body.password;
+    const newPass = req.body.newPassword;
+    const retype = req.body.retype;
+
+    jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
+
+        try {
+            const user = await new User().user(authData.username)
+            var flag  =  1; 
+            bcrypt.compare(password, user.rows[0].password_mobile, (err, result) => {  
+                if (err) {
+                    res.status(500).json({
+                        error: "Internal server error",
+                    });
+                } else if (result == true) { 
+                    if(newPass != retype) {
+                        res.status(420).json({
+                            error: "New password is not matched"
+                        })
+                    } 
+                    else {
+                        bcrypt.hash(newPass, 10, (err, hash) => {
+                            if (err)
+                                res.status(500).json({
+                                    error: "Database error",
+                                });
+                                db.pool2.query(`UPDATE mst_user SET password_mobile = $2 WHERE username = $1`, [user.rows[0].username, hash], (err) => {
+                                if(err) {
+                                    flag = 0
+                                    console.log(err)
+                                    return res.status(500).json({
+                                        error: "Database error"
+                                    })
+                                } else {
+                                    flag = 1
+                                }
+                            })
+                            if (flag) {
+                                const token = jwt.sign(
+                                    {username: user.rows[0].username},
+                                    process.env.SECRET_KEY
+                                )
+                                res.status(200).json({
+                                    message: "ok",
+                                    token: token
+                                })
+                            }
+                        });
+                    }
+                }
+                else {
+                    if (result != true)
+                    res.status(403).json({
+                        error: "Wrong password",
+                    });
+                }
+            })
+        } catch (err) {
+            console.log("error")
+            console.log(err);
+            res.status(500).json({
+                error: "Database error",
+            });
+        };
+    })
 });
 
 function verifyToken(req, res, next) { 
