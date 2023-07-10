@@ -8,6 +8,7 @@ const stockRoute = require('./route/Stock')
 
 const userRoute = require('./route-ediscount/User')
 const loginRoute = require('./route-ediscount/Login')
+const PDKRoute = require('./route-ediscount/PDK')
 
 app.use(compression())
 app.use(express.json());
@@ -33,6 +34,7 @@ app.use(stockRoute)
 
 app.use(userRoute)
 app.use(loginRoute)
+app.use(PDKRoute)
 
 const http = require('http')
 
