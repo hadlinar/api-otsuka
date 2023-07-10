@@ -43,6 +43,40 @@ router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
     });
 });
 
+router.post(`/otsuka/ediscount/change-name`, verifyToken, (req,res) => {
+    let name = req.body.name
+    
+    jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
+        try {
+            const user = await new User().user(authData.username);
+            if (user.rows.length === 0) {
+                res.status(504).json({
+                    error: "User not found"
+                })
+            } else {
+                db.pool2.query(`UPDATE mst_user SET nama = $2 WHERE username = $1`, [user.rows[0].username, name], (err) => {
+                    if(err) {
+                        flag = 0
+                        console.log(err)
+                        return res.status(500).json({
+                            error: "Database error"
+                        })
+                    } else {
+                        res.status(200).json({
+                            "message": "name has been changed"
+                        })
+                    }
+                })
+            }
+        } catch(err) {
+            console.log(err);
+            res.status(500).json({
+                error: "Database error",
+            });
+        }
+    });
+});
+
 router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) => {
     const password = req.body.password;
     const newPass = req.body.newPassword;
@@ -71,16 +105,16 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
                                     error: "Database error",
                                 });
                                 db.pool2.query(`UPDATE mst_user SET password_mobile = $2 WHERE username = $1`, [user.rows[0].username, hash], (err) => {
-                                if(err) {
-                                    flag = 0
-                                    console.log(err)
-                                    return res.status(500).json({
-                                        error: "Database error"
-                                    })
-                                } else {
-                                    flag = 1
-                                }
-                            })
+                                    if(err) {
+                                        flag = 0
+                                        console.log(err)
+                                        return res.status(500).json({
+                                            error: "Database error"
+                                        })
+                                    } else {
+                                        flag = 1
+                                    }
+                                })
                             if (flag) {
                                 const token = jwt.sign(
                                     {username: user.rows[0].username},
