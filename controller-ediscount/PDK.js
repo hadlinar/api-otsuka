@@ -2,11 +2,26 @@ const db = require('../config/database.js');
 
 class PDK {
     async listPDK(branch, cat, role){
-        let results = await db.pool2.query(`
-            SELECT * 
+        let results
+
+        if(role == 1 ) {
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
             FROM trn_pdk
-            WHERE branch_id = $1 and kategori_otsuka = $2 AND no_register IS NULL AND 
-            user_approve_${role} IS NULL AND ${role == 1 ? 'maker' : `user_approve_${role-1}`} IS NOT NULL`, [branch, cat]).catch(console.log);
+            WHERE branch_id = $1 AND no_register IS NULL AND 
+            user_approve_1 IS NULL AND maker IS NOT NULL`, [branch]).catch(console.log)
+        }
+        else if(role == 3) {
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE branch_id = $1 AND no_register IS NULL AND 
+            user_approve_${role} IS NULL AND user_approve_${role-1} IS NOT NULL`, [branch]).catch(console.log)
+        }
+        else {
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE branch_id = $1 AND kategori_otsuka = $2 AND no_register IS NULL AND 
+            user_approve_${role} IS NULL AND user_approve_${role-1} IS NOT NULL`, [branch, cat]).catch(console.log)
+        }
 
         return results
     };
@@ -42,6 +57,11 @@ class PDK {
         } 
 
         return results;
+    }
+
+    async detailPDK(id) {
+        let results = await db.pool2.query(`SELECT *, f_prod_name(kode_barang) prod_name FROM trn_detail_pdk WHERE id_ref = $1;`, [id]).catch(console.log)
+        return results
     }
     
     async approvePDK(usern, desc, date, role, id, cat, branch, disc, id_det) {

@@ -3,15 +3,11 @@ const router = express.Router();
 const PDK = require('../controller-ediscount/PDK');
 const jwt = require('jsonwebtoken')
 
-router.get(`/otsuka/ediscount/list/process`, verifyToken, (req,res) => {
+router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
-        let branch = req.body.branch
-        let cat = req.body.cat
-        let role = req.body.role
-
         try {
-            const list = await new PDK().listPDK(branch, cat, role);
+            const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role);
             res.status(200).json({
                 "message": "ok",
                 "result": list.rows
@@ -26,15 +22,12 @@ router.get(`/otsuka/ediscount/list/process`, verifyToken, (req,res) => {
 });
 
 
-router.get(`/otsuka/ediscount/list/done`, verifyToken, (req,res) => {
+router.get(`/otsuka/ediscount/done`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
-        let branch = req.body.branch
-        let cat = req.body.cat
-        let role = req.body.role
 
         try {
-            const list = await new PDK().donePDK(branch, cat, role);
+            const list = await new PDK().donePDK(authData.branch, authData.cat, authData.role);
             res.status(200).json({
                 "message": "ok",
                 "result": list.rows
@@ -47,6 +40,25 @@ router.get(`/otsuka/ediscount/list/done`, verifyToken, (req,res) => {
         }
     });
 });
+
+router.get(`/otsuka/ediscount/detail/:id`, verifyToken,(req, res) => {
+    let id = req.params.id
+
+    jwt.verify(req.token, process.env.SECRET_KEY, async (err, authData) => {
+        try {
+            const detail = await new PDK().detailPDK(id);
+            res.status(200).json({
+                "message": "ok",
+                "result": detail.rows
+            })
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({
+                error: "Database error"
+            })
+        }
+    })
+})
 
 router.post(`/otsuka/ediscount/approve/:id/:det`, verifyToken, (req,res) => {
     let id = req.params.id
