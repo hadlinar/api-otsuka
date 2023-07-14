@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const db = require('../config/database.js')
 const jwt = require('jsonwebtoken')
 const Login = require('../controller-ediscount/Login.js')
+const User = require('../controller-ediscount/User')
 
 dotenv.config()
 
@@ -20,14 +21,20 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
             });
         }
         else {
-            bcrypt.compare(password, user[0].password_mobile, (err, result) => { 
+            bcrypt.compare(password, user[0].password_mobile, async (err, result) => {
                 if (err) {
                     res.status(500).json({
                         error: "Server error",
                     });
                 } else if (result === true) { 
+                    const userDetail = await new User().user(user[0].role_id, username)
                     const token = jwt.sign({
                         username: username,
+                        password: userDetail.rows[0].password_mobile,
+                        nama: userDetail.rows[0].nama,
+                        branch: userDetail.rows[0].branch_id,
+                        cat: userDetail.rows[0].kategori_otsuka,
+                        role: userDetail.rows[0].role_id
                     }, process.env.SECRET_KEY);
                     
                     res.status(200).json({
@@ -60,17 +67,12 @@ router.post('/otsuka/ediscount/change-password', async (req, res) => {
     try {
         const user = await new Login().user(username)
         var flag  =  1; 
-        bcrypt.compare(password, user.rows[0].password, (err, result) => {  
+        bcrypt.compare(password, user.rows[0].password, (err, result) => {
             if (err) {
                 res.status(500).json({
                     error: "Internal server error",
                 });
             } else if (result == true) { 
-                // if(newPass.length < 6 || newPass.length > 12) {
-                //     res.status(422).json({
-                //         error: "Kata sandi harus lebih dari 6 huruf dan kurang dari 12 huruf",
-                //     });
-                // }
                 if(newPass != retype) {
                     res.status(420).json({
                         error: "Kata sandi baru tidak sama"
@@ -95,7 +97,9 @@ router.post('/otsuka/ediscount/change-password', async (req, res) => {
                         })
                         if (flag) {
                             const token = jwt.sign(
-                                {username: user.rows[0].username},
+                                {
+                                    username: user.rows[0].username
+                                },
                                 process.env.SECRET_KEY
                             )
                             res.status(200).json({
