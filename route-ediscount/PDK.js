@@ -66,7 +66,6 @@ router.post(`/otsuka/ediscount/approve/:id/:det`, verifyToken, (req,res) => {
 
     let desc = req.body.desc
     let date = req.body.date
-    let role = req.body.role
     let cat = req.body.cat
     let branch = req.body.branch
     let disc = req.body.disc
@@ -74,7 +73,7 @@ router.post(`/otsuka/ediscount/approve/:id/:det`, verifyToken, (req,res) => {
     jwt.verify(req.token, process.env.SECRET_KEY, async (err,authData)=>{
 
         try {
-            let appr = await new PDK().approvePDK(authData.username, desc, date, role, id, cat, branch, disc, idDet);
+            let appr = await new PDK().approvePDK(authData.username, desc, date, authData.role, id, cat, branch, disc, idDet);
             if (appr.rows[0].f_upt_appr == 'UPDATED') {
                 res.status(200).json({
                     "message": "updated"
