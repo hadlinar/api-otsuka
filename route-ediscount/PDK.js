@@ -107,7 +107,7 @@ router.post(`/otsuka/ediscount/reject/:id`, verifyToken, (req,res) => {
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
 
         try {
-            let reject = await new PDK().rejectPDK(authData.username, desc, date, role, id, cat, branch)
+            let reject = await new PDK().rejectPDK(authData.username, desc, date, authData.role, id, cat, branch)
             if (reject.rows[0].f_upt_reject == 'REJECTED') {
                 res.status(200).json({
                     "message": "rejected"
