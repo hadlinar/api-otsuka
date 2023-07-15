@@ -126,7 +126,7 @@ router.post('/otsuka/ediscount/change-password', async (req, res) => {
     };
 });
 
-router.post('/otsuka/ediscount/logout', verifyToken, async (req, res) => {
+router.post('/otsuka/ediscount/logout', async (req, res) => {
     const token = req.headers["Authorization"]
     jwt.sign(token, "", { expiresIn: 1 }, (logout, err) => {
         if(logout) {
@@ -140,17 +140,5 @@ router.post('/otsuka/ediscount/logout', verifyToken, async (req, res) => {
         }
     })
 })
-
-function verifyToken(req, res, next) { 
-    const bearerHearder = req.headers['authorization'];
-    if(typeof bearerHearder != 'undefined'){
-        const bearer = bearerHearder.split(' ');
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();  
-    } else {  
-        res.sendStatus(403);  
-    }  
-}
 
 module.exports = router;
