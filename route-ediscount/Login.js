@@ -126,4 +126,19 @@ router.post('/otsuka/ediscount/change-password', async (req, res) => {
     };
 });
 
+router.post('/otsuka/ediscount/logout', async (req, res) => {
+    const token = req.headers["Authorization"]
+    jwt.sign(token, "", { expiresIn: 1 }, (logout, err) => {
+        if(logout) {
+            res.status(200).json({
+                "message": "you've been logged out"
+            })
+        } else {
+            res.status(500).json({
+                error: "Internal error"
+            })
+        }
+    })
+})
+
 module.exports = router;
