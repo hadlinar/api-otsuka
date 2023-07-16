@@ -5,19 +5,19 @@ class PDK {
         let results
 
         if(role == 1 ) {
-            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_user_name(maker) approver_name, f_cust_name(kode_pelanggan) cust
             FROM trn_pdk
             WHERE branch_id = $1 AND no_register IS NULL AND 
             user_approve_1 IS NULL AND maker IS NOT NULL`, [branch]).catch(console.log)
         }
         else if(role == 3) {
-            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_user_name(user_approve_${role-1}) approver_name,f_cust_name(kode_pelanggan) cust
             FROM trn_pdk
             WHERE branch_id = $1 AND no_register IS NULL AND 
             user_approve_${role} IS NULL AND user_approve_${role-1} IS NOT NULL`, [branch]).catch(console.log)
         }
         else {
-            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_cust_name(kode_pelanggan) cust
+            results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_user_name(user_approve_${role-1}) approver_name, f_cust_name(kode_pelanggan) cust
             FROM trn_pdk
             WHERE branch_id = $1 AND kategori_otsuka = $2 AND no_register IS NULL AND 
             user_approve_${role} IS NULL AND user_approve_${role-1} IS NOT NULL`, [branch, cat]).catch(console.log)
