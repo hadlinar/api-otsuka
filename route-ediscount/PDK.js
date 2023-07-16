@@ -4,14 +4,29 @@ const PDK = require('../controller-ediscount/PDK');
 const jwt = require('jsonwebtoken')
 
 router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
-    
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
+        
+        let list2 = []
         try {
-            const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role);
-            res.status(200).json({
-                "message": "ok",
-                "result": list.rows
-            })
+            if(authData.branch.length > 2) {
+                for (let i = 0; i < authData.branch.length; i++) {
+                    const list = await new PDK().listPDK(authData.branch[i], authData.cat, authData.role)
+                    if(list.rows.length > 0) {
+                        console.log(list.rows)
+                        list2.push(list.rows[0])
+                    }
+                }
+                res.status(200).json({
+                    "message": "ok",
+                    "result": list2
+                })
+            } else {
+                const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role)
+                res.status(200).json({
+                    "message": "ok",
+                    "result": list.rows
+                })
+            }
         } catch(err) {
             console.log(err);
             res.status(500).json({
