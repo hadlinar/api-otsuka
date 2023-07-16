@@ -12,7 +12,6 @@ router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
                 for (let i = 0; i < authData.branch.length; i++) {
                     const list = await new PDK().listPDK(authData.branch[i], authData.cat, authData.role)
                     if(list.rows.length > 0) {
-                        console.log(list.rows)
                         list2.push(list.rows[0])
                     }
                 }
