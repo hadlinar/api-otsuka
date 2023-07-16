@@ -8,6 +8,7 @@ const db = require('../config/database.js')
 router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
+        console.log(authData)
         
         try {
             const user = await new User().user(authData.role, authData.username)

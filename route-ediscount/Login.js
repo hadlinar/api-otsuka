@@ -11,6 +11,8 @@ dotenv.config()
 const router = express.Router()
 
 router.post('/otsuka/ediscount/login', async (req, res) => {
+    let listBranch = []
+
     const { username, password } = req.body;
     try {
         const data = await new Login().login(username)
@@ -28,11 +30,16 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
                     });
                 } else if (result === true) { 
                     const userDetail = await new User().user(user[0].role_id, username)
+                    if(userDetail.rows.length > 1) {
+                        for(let i=0; i < userDetail.rows.length; i++) {
+                            listBranch.push(userDetail.rows[i].branch_id)
+                        }
+                    }
                     const token = jwt.sign({
                         username: username,
                         password: userDetail.rows[0].password_mobile,
                         nama: userDetail.rows[0].nama,
-                        branch: userDetail.rows[0].branch_id,
+                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 > 1 ?userDetail.rows[0].branch_id : listBranch,
                         cat: userDetail.rows[0].kategori_otsuka,
                         role: userDetail.rows[0].role_id
                     }, process.env.SECRET_KEY);
