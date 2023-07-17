@@ -39,7 +39,7 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
                         username: username,
                         password: userDetail.rows[0].password_mobile,
                         nama: userDetail.rows[0].nama,
-                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 > 1 ?userDetail.rows[0].branch_id : listBranch,
+                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 ?userDetail.rows[0].branch_id : listBranch,
                         cat: userDetail.rows[0].kategori_otsuka,
                         role: userDetail.rows[0].role_id
                     }, process.env.SECRET_KEY);
