@@ -8,7 +8,7 @@ router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
         
         let list2 = []
         try {
-            if(authData.branch.length > 2) {
+            if(authData.branch.length > 2 && authData.branch[0] != 11 && authData.role != 5 && authData.role != 6) {
                 for (let i = 0; i < authData.branch.length; i++) {
                     const list = await new PDK().listPDK(authData.branch[i], authData.cat, authData.role)
                     if(list.rows.length > 0) {
@@ -19,7 +19,15 @@ router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
                     "message": "ok",
                     "result": list2
                 })
-            } else {
+            } 
+            else if(authData.branch[0] == 11) {
+                const list = await new PDK().listPDK(authData.branch[0], authData.cat, authData.role)
+                res.status(200).json({
+                    "message": "ok",
+                    "result": list.rows
+                })
+            }
+            else {
                 const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role)
                 res.status(200).json({
                     "message": "ok",
