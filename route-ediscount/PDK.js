@@ -48,15 +48,19 @@ router.get(`/otsuka/ediscount/done`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
 
-        let list2 = []
+        let list2
 
         if(authData.branch.length > 2 && authData.branch[0] != 11 && authData.role != 5 && authData.role != 6) {
             for (let i = 0; i < authData.branch.length; i++) {
                 const list = await new PDK().donePDK(authData.branch[i], authData.cat, authData.role)
+                // console.log(list.rows.length)
                 if(list.rows.length > 0) {
-                    list2.push(list.rows[0])
+                    // console.log(list.rows)
+                    // console.log("=================")
+                    list2 = list.rows
                 }
             }
+            // console.log(list2)
             res.status(200).json({
                 "message": "ok",
                 "result": list2
@@ -64,6 +68,7 @@ router.get(`/otsuka/ediscount/done`, verifyToken, (req,res) => {
         } 
         else if(authData.branch[0] == 11) {
             const list = await new PDK().donePDK(authData.branch[0], authData.cat, authData.role)
+            console.log(list.rows)
             res.status(200).json({
                 "message": "ok",
                 "result": list.rows
@@ -71,24 +76,12 @@ router.get(`/otsuka/ediscount/done`, verifyToken, (req,res) => {
         }
         else {
             const list = await new PDK().donePDK(authData.branch, authData.cat, authData.role)
+            console.log(list.rows)
             res.status(200).json({
                 "message": "ok",
                 "result": list.rows
             })
         }
-
-        // try {
-        //     const list = await new PDK().donePDK(authData.branch, authData.cat, authData.role);
-        //     res.status(200).json({
-        //         "message": "ok",
-        //         "result": list.rows
-        //     })
-        // } catch(err) {
-        //     console.log(err);
-        //     res.status(500).json({
-        //         error: "Database error",
-        //     });
-        // }
     });
 });
 
@@ -159,15 +152,16 @@ router.post(`/otsuka/ediscount/reject/:id`, verifyToken, (req,res) => {
 
         try {
             let reject = await new PDK().rejectPDK(authData.username, desc, date, authData.role, id, cat, branch)
-            if (reject.rows[0].f_upt_reject == 'REJECTED') {
-                res.status(200).json({
-                    "message": "rejected"
-                })
-            } else {
-                res.status(409).json({
-                    "message": "error while updating database"
-                })
-            }
+            console.log(reject.rows)
+            // if (reject.rows[0].f_upt_reject == 'REJECTED') {
+            //     res.status(200).json({
+            //         "message": "rejected"
+            //     })
+            // } else {
+            //     res.status(409).json({
+            //         "message": "error while updating database"
+            //     })
+            // }
         } catch(err) {
             res.status(500).json({
                 message: 'Failed to authenticate token'
