@@ -34,23 +34,6 @@ class PDK {
 
     async donePDK(branch, cat, role) {
         let results
-        console.log("masuk done")
-
-        // if(role != 5) {
-        //     let query = `SELECT *, f_branch_name('${branch}') branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
-        //     f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust 
-        //     FROM trn_pdk
-        //     WHERE branch_id = '${branch}' AND kategori_otsuka = '${cat}' AND user_approve_${role} IS NOT NULL AND final_status IS NOT NULL`
-        //     results = await db.pool2.query(query).catch(console.log)
-        // } 
-        // if (role == 6) {
-        //     let query = `SELECT *, f_branch_name($1) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
-        //     f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust 
-        //     FROM trn_pdk
-        //     WHERE branch_id = '${branch}' AND kategori_otsuka = '${cat}' AND user_approve_6 IS NOT NULL AND final_status IS NOT NULL`
-        //     results = await db.pool2.query(query).catch(console.log)
-        // }
-        // else {
 
         if(role == 1 ) {
             results = await db.pool2.query(`SELECT *, f_branch_name($1) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
@@ -82,14 +65,6 @@ class PDK {
             ORDER BY date ASC`, [branch, cat]).catch(console.log)
         }
 
-            // results = await db.pool2.query(`
-            // SELECT *, f_branch_name($1) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
-            // f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust 
-            // FROM trn_pdk
-            // WHERE branch_id = $1 AND user_approve_${role + 1} IS NOT NULL
-            // ORDER BY date ASC`, [branch]).catch(console.log)
-        // } 
-
         return results;
     }
 
@@ -101,14 +76,6 @@ class PDK {
     async approvePDK(usern, desc, date, role, id, cat, branch, disc, id_det) {
         let results = await db.pool2.query(
             `SELECT * FROM f_upt_appr($1, $2, $3, $4, $5, $6, $7, $8, $9);`, [usern, desc, date, role, id, cat, branch, disc, id_det]
-        ).catch(console.log)
-
-        return results
-    }
-
-    async updateDiscPDK(id, idRef, disc) {
-        let results = await db.pool2.query(
-            `SELECT * FROM f_upt_detail($1, $2, $3);`, [id, idRef, disc]
         ).catch(console.log)
 
         return results
