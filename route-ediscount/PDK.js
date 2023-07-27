@@ -139,7 +139,6 @@ router.post(`/otsuka/ediscount/approve/:id/:det`, verifyToken, (req,res) => {
 
 router.post(`/otsuka/ediscount/reject/:id`, verifyToken, (req,res) => {
     let id = req.params.id
-    console.log(req.body)
 
     let desc = req.body.desc
     let date = req.body.date
