@@ -29,7 +29,7 @@ router.post(`/otsuka/ediscount/change-name`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
         try {
-            const user = await new User().user(authData.username);
+            const user = await new User().userCheck(authData.username);
             if (user.rows.length === 0) {
                 res.status(504).json({
                     error: "User not found"
@@ -43,6 +43,7 @@ router.post(`/otsuka/ediscount/change-name`, verifyToken, (req,res) => {
                             error: "Database error"
                         })
                     } else {
+                        console.log("done")
                         res.status(200).json({
                             "message": "name has been changed"
                         })
