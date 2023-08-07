@@ -43,7 +43,6 @@ router.post(`/otsuka/ediscount/change-name`, verifyToken, (req,res) => {
                             error: "Database error"
                         })
                     } else {
-                        console.log("done")
                         res.status(200).json({
                             "message": "name has been changed"
                         })
@@ -67,7 +66,7 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
 
         try {
-            const user = await new User().user(authData.username)
+            const user = await new User().userCheck(authData.username)
             var flag  =  1; 
             bcrypt.compare(password, user.rows[0].password_mobile, (err, result) => {  
                 if (err) {
@@ -99,7 +98,14 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
                                 })
                             if (flag) {
                                 const token = jwt.sign(
-                                    {username: user.rows[0].username},
+                                    {
+                                        username: user.rows[0].username,
+                                        password: user.rows[0].password_mobile,
+                                        nama: user.rows[0].nama,
+                                        branch: user.rows[0].role_id == 1 || user.rows[0].role_id == 3 ?user.rows[0].branch_id : listBranch,
+                                        cat: user.rows[0].kategori_otsuka,
+                                        role: user.rows[0].role_id
+                                    },
                                     process.env.SECRET_KEY
                                 )
                                 res.status(200).json({
