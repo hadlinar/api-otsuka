@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require('../controller-ediscount/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const twinBcrypt = require('twin-bcrypt')
 const db = require('../config/database.js')
 
 router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
@@ -11,10 +12,25 @@ router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
         
         try {
             const user = await new User().user(authData.role, authData.username)
-            res.status(200).json({
-                "message": "ok",
-                "result": user.rows[0]
+            const check = await new User().userCheck(authData.username)
+
+            bcrypt.compare("123456", check.rows[0].password_mobile, (err, result) => {
+                if (result) {
+                    res.status(200).json({
+                        "message": "ok",
+                        "check": "1",
+                        "result": user.rows[0]
+                    })
+                } else {
+                    res.status(200).json({
+                        "message": "ok",
+                        "check": "0",
+                        "result": user.rows[0]
+                    })
+                }
             })
+            
+            
         } catch(err) {
             console.log(err);
             res.status(500).json({
@@ -23,6 +39,7 @@ router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {
         }
     });
 });
+
 
 router.post(`/otsuka/ediscount/change-name`, verifyToken, (req,res) => {
     let name = req.body.name
@@ -68,6 +85,7 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
         try {
             const user = await new User().userCheck(authData.username)
             var flag  =  1; 
+
             bcrypt.compare(password, user.rows[0].password_mobile, (err, result) => {  
                 if (err) {
                     res.status(500).json({
@@ -85,7 +103,7 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
                                 res.status(500).json({
                                     error: "Database error",
                                 });
-                                db.pool2.query(`UPDATE mst_user SET password_mobile = $2 WHERE username = $1`, [user.rows[0].username, hash], (err) => {
+                                db.pool2.query(`UPDATE mst_user SET password_mobile = $2, password = $3 WHERE username = $1`, [user.rows[0].username, hash, hash.replace('$2b$', '$2y$')], (err) => {
                                     if(err) {
                                         flag = 0
                                         console.log(err)
@@ -110,6 +128,7 @@ router.post('/otsuka/ediscount/change-password', verifyToken, async (req, res) =
                                 )
                                 res.status(200).json({
                                     message: "ok",
+                                    check: "0",
                                     token: token
                                 })
                             }

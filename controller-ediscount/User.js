@@ -3,7 +3,7 @@ const db = require('../config/database.js');
 class User {
     async userCheck(usern){
         let results = await db.pool2.query(`
-        SELECT username, password_mobile, nama, branch_id, role_id, is_active
+        SELECT username, password_mobile, password, nama, branch_id, role_id, is_active
         FROM mst_user
         WHERE is_active = 1 AND username = $1`, [usern]).catch(console.log);
         

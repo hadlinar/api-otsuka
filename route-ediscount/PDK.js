@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 
 router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
-        
         let list2 = []
         try {
             if(authData.branch.length > 2 && authData.branch[0] != 11 && authData.role != 5 && authData.role != 6) {
@@ -48,19 +47,17 @@ router.get(`/otsuka/ediscount/done`, verifyToken, (req,res) => {
     
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
 
-        let list2
+        let list2 = []
 
         if(authData.branch.length > 2 && authData.branch[0] != 11 && authData.role != 5 && authData.role != 6) {
             for (let i = 0; i < authData.branch.length; i++) {
                 const list = await new PDK().donePDK(authData.branch[i], authData.cat, authData.role)
-                // console.log(list.rows.length)
                 if(list.rows.length > 0) {
-                    // console.log(list.rows)
-                    // console.log("=================")
                     list2 = list.rows
+                } else {
+                    continue
                 }
             }
-            // console.log(list2)
             res.status(200).json({
                 "message": "ok",
                 "result": list2
