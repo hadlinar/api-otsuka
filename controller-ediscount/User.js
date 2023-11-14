@@ -12,7 +12,7 @@ class User {
 
     async user(role, usern) {
         let results = await db.pool2.query(`
-        SELECT u.username, u.password_mobile, nama, ${role == 1 || role == 3 ? `u.branch_id, ` : `o.branch_id, `} kategori_otsuka, role_id, is_active
+        SELECT u.username, u.password_mobile, nama, ${role == 1 || role == 3 ? `u.branch_id, ` : `o.branch_id, `} kategori_otsuka, role_id, is_active, flg_am
         FROM mst_user as u, mst_position_otsuka as o
         WHERE ${role == 1 || role == 3 ? '' : `user_approve_${role} = username AND `} username = $1`, [usern]).catch(console.log)
 

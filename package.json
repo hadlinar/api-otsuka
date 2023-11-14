@@ -22,6 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "npm": "^10.2.2",
     "pg": "^8.7.3",
+    "pg-pubsub": "^0.8.1",
     "twin-bcrypt": "^2.1.1"
   }
 }

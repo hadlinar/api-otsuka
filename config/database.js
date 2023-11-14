@@ -1,4 +1,5 @@
 const Pool = require('pg').Pool
+const PubSub = require('pg-pubsub')
 
 const pool = new Pool({
   user: 'postgres',
@@ -8,7 +9,6 @@ const pool = new Pool({
   port: 5432,
 })
 
-
 const pool2 = new Pool({
   user: 'tekinfo',
   host: '170.1.70.67',
@@ -17,4 +17,6 @@ const pool2 = new Pool({
   port: 5432,
 })
 
-module.exports = { pool, pool2 };
+const pubsub = new PubSub(pool2)
+
+module.exports = { pool, pool2, pubsub};

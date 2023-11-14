@@ -1,6 +1,7 @@
 const compression = require('compression')
 const express = require("express");
 const cors = require("cors");
+const db = require('./config/database.js');
 const app = express();
 
 const pnRoute = require('./route/PN')
@@ -48,5 +49,7 @@ app.use(function(req, res, next) {
 const hostname = '127.0.0.1'
 
 http.createServer(app).listen(port, () => {
+    var listen = db.pool2.query(`LISTEN update_notification`)
+        console.log(listen);
     console.log(`Server running at on port ${port}`);
 });
