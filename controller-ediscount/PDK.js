@@ -28,8 +28,6 @@ class PDK {
             user_approve_${role} IS NULL AND user_approve_${role-1} IS NOT NULL
             ORDER BY date ASC`
 
-            console.log(query)
-
             results = await db.pool2.query(query).catch(console.log)
         }
 
