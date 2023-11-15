@@ -3,7 +3,6 @@ const router = express.Router()
 const User = require('../controller-ediscount/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const twinBcrypt = require('twin-bcrypt')
 const db = require('../config/database.js')
 
 router.get(`/otsuka/ediscount/user`, verifyToken, (req,res) => {

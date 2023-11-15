@@ -23,6 +23,7 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
             });
         }
         else {
+            console.log(user)
             bcrypt.compare(password, user[0].password_mobile, async (err, result) => {
                 if (err) {
                     res.status(500).json({
@@ -39,9 +40,10 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
                         username: username,
                         password: userDetail.rows[0].password_mobile,
                         nama: userDetail.rows[0].nama,
-                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 ?userDetail.rows[0].branch_id : listBranch,
+                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 || (userDetail.rows[0].flg_am == "Y" && userDetail.rows[0].role_id == 2) ? userDetail.rows[0].branch_id : listBranch,
                         cat: userDetail.rows[0].kategori_otsuka,
-                        role: userDetail.rows[0].role_id
+                        role: userDetail.rows[0].role_id,
+                        flg_am: userDetail.rows[0].flg_am
                     }, process.env.SECRET_KEY);
                     
                     res.status(200).json({
