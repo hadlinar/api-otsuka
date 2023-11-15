@@ -23,7 +23,6 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
             });
         }
         else {
-            console.log(user)
             bcrypt.compare(password, user[0].password_mobile, async (err, result) => {
                 if (err) {
                     res.status(500).json({
@@ -127,7 +126,6 @@ router.post('/otsuka/ediscount/change-password', async (req, res) => {
             }
         })
     } catch (err) {
-        console.log("error")
         console.log(err);
         res.status(500).json({
             error: "Database error",
