@@ -5,34 +5,12 @@ const jwt = require('jsonwebtoken')
 
 router.get(`/otsuka/ediscount/process`, verifyToken, (req,res) => {
     jwt.verify(req.token, process.env.SECRET_KEY,async (err,authData)=>{
-        let list2 = []
         try {
-            if(authData.branch.length > 2 && authData.branch[0] != 11 && authData.role != 5 && authData.role != 6) {
-                for (let i = 0; i < authData.branch.length; i++) {
-                    const list = await new PDK().listPDK(authData.branch[i], authData.cat, authData.role)
-                    if(list.rows.length > 0) {
-                        list2.push(list.rows[0])
-                    }
-                }
-                res.status(200).json({
-                    "message": "ok",
-                    "result": list2
-                })
-            } 
-            else if(authData.branch[0] == 11) {
-                const list = await new PDK().listPDK(authData.branch[0], authData.cat, authData.role)
-                res.status(200).json({
-                    "message": "ok",
-                    "result": list.rows
-                })
-            }
-            else {
-                const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role)
-                res.status(200).json({
-                    "message": "ok",
-                    "result": list.rows
-                })
-            }
+            const list = await new PDK().listPDK(authData.branch, authData.cat, authData.role)
+            res.status(200).json({
+                "message": "ok",
+                "result": list.rows
+            })
         } catch(err) {
             console.log(err);
             res.status(500).json({
@@ -110,7 +88,6 @@ router.post(`/otsuka/ediscount/approve/:id/:det`, verifyToken, (req,res) => {
     let disc = req.body.disc
     
     jwt.verify(req.token, process.env.SECRET_KEY, async (err,authData)=>{
-
         try {
             let appr = await new PDK().approvePDK(authData.username, desc, date, authData.role, id, cat, branch, disc, idDet);
             if (appr.rows[0].f_upt_appr == 'UPDATED') {
