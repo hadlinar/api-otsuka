@@ -17,6 +17,7 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
     try {
         const data = await new Login().login(username)
         const user = data.rows;
+        
         if (user.length === 0) {
             res.status(404).json({
                 error: "User is not registered",
@@ -39,8 +40,8 @@ router.post('/otsuka/ediscount/login', async (req, res) => {
                         username: username,
                         password: userDetail.rows[0].password_mobile,
                         nama: userDetail.rows[0].nama,
-                        branch: userDetail.rows[0].role_id == 1 || userDetail.rows[0].role_id == 3 || (userDetail.rows[0].flg_am == "Y" && userDetail.rows[0].role_id == 2) ? userDetail.rows[0].branch_id : listBranch,
-                        cat: userDetail.rows[0].kategori_otsuka,
+                        branch: userDetail.rows[0].branch_id.split(", "),
+                        cat: userDetail.rows[0].kategori_otsuka.split(", "),
                         role: userDetail.rows[0].role_id,
                         flg_am: userDetail.rows[0].flg_am
                     }, process.env.SECRET_KEY);
