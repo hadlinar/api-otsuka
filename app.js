@@ -1,8 +1,8 @@
 const compression = require('compression')
 const express = require("express");
 const cors = require("cors");
-const db = require('./config/database.js');
-const app = express();
+const app = express()
+const { Client } = require('pg')
 
 const pnRoute = require('./route/PN')
 const stockRoute = require('./route/Stock')
@@ -10,6 +10,8 @@ const stockRoute = require('./route/Stock')
 const userRoute = require('./route-ediscount/User')
 const loginRoute = require('./route-ediscount/Login')
 const PDKRoute = require('./route-ediscount/PDK')
+
+const postDTMS = require('./route-ediscount/PostDTMS')
 
 app.use(compression())
 app.use(express.json());
@@ -41,6 +43,23 @@ const http = require('http')
 
 const port = 3000
 
+const client = new Client ({
+    connectionString: "postgres://tekinfo:apps2022!@170.1.70.67:5432/ediscount"
+})
+
+client.connect((err, client) => {
+    let payload
+    if (err) {
+        console.log("Error when connecting database: ", err)
+    } else {
+        client.on('notification', (msg) => {
+            payload = JSON.parse(msg.payload)
+            postDTMS.postDTMS(payload)
+        })
+        client.query("LISTEN update_dtms")
+    }
+})
+
 app.use(function(req, res, next) {
     res.status(404);
     res.send('404: File Not Found');
@@ -48,8 +67,7 @@ app.use(function(req, res, next) {
 
 const hostname = '127.0.0.1'
 
+
 http.createServer(app).listen(port, () => {
-    var listen = db.pool2.query(`LISTEN update_notification`)
-        console.log(listen);
     console.log(`Server running at on port ${port}`);
 });

@@ -22,7 +22,9 @@
     "jsonwebtoken": "^8.5.1",
     "npm": "^10.2.2",
     "pg": "^8.7.3",
+    "pg-listen": "^1.7.0",
     "pg-pubsub": "^0.8.1",
-    "twin-bcrypt": "^2.1.1"
+    "twin-bcrypt": "^2.1.1",
+    "oracledb": "https://github.com/oracle/node-oracledb/releases/download/v5.4.0/oracledb-src-5.4.0.tgz"
   }
 }
