@@ -7,7 +7,7 @@ async function postDTMS(payload) {
 
     let queryDB = `
         BEGIN 
-        INSERT INTO RN.TRN_PDK_SINDORO(
+        INSERT INTO RN.TRN_PDK(
             NO_REGISTER,
             BRANCH_ID,
             KATEGORI_OTSUKA,
@@ -68,7 +68,7 @@ async function manualPostDTMS(payload) {
 
         let queryDB = `
             BEGIN 
-            INSERT INTO RN.TRN_PDK_SINDORO(
+            INSERT INTO RN.TRN_PDK(
                 NO_REGISTER,
                 BRANCH_ID,
                 KATEGORI_OTSUKA,
@@ -101,6 +101,8 @@ async function manualPostDTMS(payload) {
                 );
             END;
         `
+
+        console.log(queryDB)
 
         try {
 
