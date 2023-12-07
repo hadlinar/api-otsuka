@@ -20,8 +20,8 @@ const pool2 = new Pool({
 
 const oracle = {
   user: "RN",
-  password: "RNNUS",
-  connectString: "NUSINDO49"
+  password: "ORARNNUS",
+  connectString: "NUSINDO38"
 }
 
 const pubsub = new PubSub(pool2)
