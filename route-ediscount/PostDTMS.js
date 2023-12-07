@@ -102,8 +102,6 @@ async function manualPostDTMS(payload) {
             END;
         `
 
-        console.log(queryDB)
-
         try {
 
             connection = await oracledb.getConnection(db.oracle)
