@@ -21,7 +21,9 @@ async function postDTMS(payload) {
             PERCENT_DISC_RN,
             PERCENT_DISC_OUTLET,
             PERCENT_DISC_KONV,
-            TOTAL_DISC
+            TOTAL_DISC,
+            DATE_APPROVED,
+            DATE_MIGRATED
             ) VALUES(
                 '${payload.no_register}',
                 '${payload.branch_id}',
@@ -36,7 +38,9 @@ async function postDTMS(payload) {
                 '${payload.percent_disc_rn}',
                 '${payload.percent_disc_outlet}',
                 '${payload.percent_disc_konversi}',
-                '${payload.total_disc}'
+                '${payload.total_disc}',
+                '${payload.date_approved}',
+                SYSDATE
             );
         END;
     `
@@ -82,7 +86,9 @@ async function manualPostDTMS(payload) {
                 PERCENT_DISC_RN,
                 PERCENT_DISC_OUTLET,
                 PERCENT_DISC_KONV,
-                TOTAL_DISC
+                TOTAL_DISC,
+                DATE_APPROVED,
+                DATE_MIGRATED
                 ) VALUES(
                     '${payload[e].no_register}',
                     '${payload[e].branch_id}',
@@ -97,7 +103,9 @@ async function manualPostDTMS(payload) {
                     '${payload[e].percent_disc_rn}',
                     '${payload[e].percent_disc_outlet}',
                     '${payload[e].percent_disc_konversi}',
-                    '${payload[e].total_disc}'
+                    '${payload[e].total_disc}',
+                    '${payload[e].date_approved}',
+                    SYSDATE
                 );
             END;
         `
