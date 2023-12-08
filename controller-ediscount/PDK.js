@@ -87,7 +87,7 @@ class PDK {
 
     async postDTMS() {
         let res = await db.pool2.query(
-            `SELECT p.no_register, p.branch_id, p.kategori_otsuka, p.kode_pelanggan, p.supplier_id, p.no_draft, kode_barang, qty, hna, total_sales, percent_disc_rn, percent_disc_outlet, percent_disc_konversi, total_disc
+            `SELECT p.no_register, p.branch_id, p.kategori_otsuka, p.kode_pelanggan, p.supplier_id, p.no_draft, kode_barang, qty, hna, total_sales, percent_disc_rn, percent_disc_outlet, percent_disc_konversi, total_disc, f_get_date_appr(p.level, p.no_draft) date_approved
             FROM trn_pdk as p, trn_detail_pdk
             WHERE p.id = id_ref AND no_register IS  NOT NULL AND maker != 'maker'`).catch(console.log)
 
