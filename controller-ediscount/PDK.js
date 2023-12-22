@@ -23,7 +23,6 @@ class PDK {
         } else {
             branchAgg = "('" + branch[0] + "')"
         }
-        
 
         let results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
         f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
@@ -35,7 +34,7 @@ class PDK {
         return results
     };
 
-    async donePDK(branch, cat, role) {
+    async donePDK(branch, cat, role, filter) {
         let branchAgg = ''
         cat = cat.length == 2 ? "('S', 'U')" : "('" + cat[0] + "')"
         if(branch.length > 1) {
@@ -55,11 +54,39 @@ class PDK {
             branchAgg = "('" + branch[0] + "')"
         }
 
-        let results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
-        f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
-        FROM trn_pdk
-        WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''}
-        ORDER BY date ASC`).catch(console.log)
+        let results
+
+        if(filter == 'oldest') {
+            results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
+            f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''}
+            ORDER BY date ASC`).catch(console.log)
+        } else if (filter == 'newest') {
+            results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
+            f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''}
+            ORDER BY date DESC`).catch(console.log)
+        } else if (filter == 'done') {
+            results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
+            f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''} AND final_status = 't'
+            ORDER BY date DESC`).catch(console.log)
+        } else if (filter == 'reject') {
+            results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
+            f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''} AND final_status = 'f'
+            ORDER BY date DESC`).catch(console.log)
+        } else if (filter == 'processed') {
+            results = await db.pool2.query(`SELECT *, f_branch_name(branch_id) branch, f_user_name(maker) maker_name, f_user_name(user_approve_1) approver_1, f_user_name(user_approve_2) approver_2, 
+            f_user_name(user_approve_3) approver_3, f_user_name(user_approve_4) approver_4, f_user_name(user_approve_5) approver_5, f_user_name(user_approve_6) approver_6, f_cust_name(kode_pelanggan) cust
+            FROM trn_pdk
+            WHERE ${role == 3 ? `` : `branch_id in ${branchAgg} AND`} kategori_otsuka in ${cat} AND user_approve_${role} IS NOT NULL ${role == 2 || role == 4 ? `AND level != 9` : ''} AND final_status IS NULL
+            ORDER BY date DESC`).catch(console.log)
+        }
 
         return results;
     }
