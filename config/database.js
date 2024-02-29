@@ -14,7 +14,7 @@ const pool2 = new Pool({
   user: 'tekinfo',
   host: '170.1.70.67',
   database: 'ediscount',
-  password: 'apps2022!',
+  password: 'Jakarta!@#09876',
   port: 5432,
 })
 
