@@ -12,6 +12,7 @@ const router = express.Router()
 
 router.post('/otsuka/ediscount/login', async (req, res) => {
     let listBranch = []
+    console.log("login")
 
     const { username, password } = req.body;
     try {

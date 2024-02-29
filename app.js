@@ -13,6 +13,8 @@ const PDKRoute = require('./route-ediscount/PDK')
 
 const postDTMS = require('./route-ediscount/PostDTMS')
 
+const poolDB = require('./config/database')
+
 app.use(compression())
 app.use(express.json());
 app.use(cors());
