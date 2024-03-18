@@ -45,8 +45,10 @@ const http = require('http')
 
 const port = 3000
 
+var connectionURL = 'postgres://tekinfo:apps2022!@170.1.70.67:5432/ediscount'
+
 const client = new Client ({
-    connectionString: "postgres://tekinfo:apps2022!@170.1.70.67:5432/ediscount"
+    connectionString: connectionURL
 })
 
 client.connect((err, client) => {
