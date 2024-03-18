@@ -5,51 +5,52 @@ async function postDTMS(payload) {
 
     let connection
 
-    let queryDB = `
-        BEGIN 
-        INSERT INTO RN.TRN_PDK(
-            NO_REGISTER,
-            BRANCH_ID,
-            KATEGORI_OTSUKA,
-            KODE_PELANGGAN,
-            SUPPLIER_ID,
-            NO_DRAFT,
-            KODE_BARANG,
-            QTY,
-            HNA,
-            TOTAL_SALES,
-            PERCENT_DISC_RN,
-            PERCENT_DISC_OUTLET,
-            PERCENT_DISC_KONV,
-            TOTAL_DISC,
-            DATE_APPROVED,
-            DATE_MIGRATED
-            ) VALUES(
-                '${payload.no_register}',
-                '${payload.branch_id}',
-                '${payload.kategori_otsuka}',
-                '${payload.kode_pelanggan}',
-                '${payload.supplier_id}',
-                '${payload.no_draft}',
-                '${payload.kode_barang}',
-                '${payload.qty}',
-                '${payload.hna}',
-                '${payload.total_sales}',
-                '${payload.percent_disc_rn}',
-                '${payload.percent_disc_outlet}',
-                '${payload.percent_disc_konversi}',
-                '${payload.total_disc}',
-                '${payload.date_approved}',
-                SYSDATE
-            );
-        END;
-    `
+    var queryDB = `
+            BEGIN 
+            INSERT INTO RN.TRN_PDK(
+                NO_REGISTER,
+                BRANCH_ID,
+                KATEGORI_OTSUKA,
+                KODE_PELANGGAN,
+                SUPPLIER_ID,
+                NO_DRAFT,
+                KODE_BARANG,
+                QTY,
+                HNA,
+                TOTAL_SALES,
+                PERCENT_DISC_RN,
+                PERCENT_DISC_OUTLET,
+                PERCENT_DISC_KONV,
+                TOTAL_DISC,
+                DATE_APPROVED,
+                DATE_MIGRATED
+                ) VALUES(
+                    '${payload.no_register}',
+                    '${payload.branch_id}',
+                    '${payload.kategori_otsuka}',
+                    '${payload.kode_pelanggan}',
+                    '${payload.supplier_id}',
+                    '${payload.no_draft}',
+                    '${payload.kode_barang}',
+                    '${payload.qty}',
+                    '${payload.hna}',
+                    '${payload.total_sales}',
+                    '${payload.percent_disc_rn}',
+                    '${payload.percent_disc_outlet}',
+                    '${payload.percent_disc_konversi}',
+                    '${payload.total_disc}',
+                    '${payload.date_approved}',
+                    SYSDATE
+                );
+            END;
+        `
 
     try {
+        connection = await oracledb.getConnection(db.oracle2)
 
-        connection = await oracledb.getConnection(db.oracle)
-
-        await connection.execute(queryDB,  [], { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true})
+        // if(payload.maker != 'maker') {
+            await connection.execute(queryDB,  [], { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true})
+        // }
 
     } catch (err) {
         console.error(err.message);
@@ -70,7 +71,8 @@ async function manualPostDTMS(payload) {
     
     for(let e in payload) {
 
-        let queryDB = `
+        // if(payload.maker != maker) {
+            var queryDB = `
             BEGIN 
             INSERT INTO RN.TRN_PDK(
                 NO_REGISTER,
@@ -109,12 +111,15 @@ async function manualPostDTMS(payload) {
                 );
             END;
         `
+        // } 
 
         try {
 
             connection = await oracledb.getConnection(db.oracle)
 
-            await connection.execute(queryDB,  [], { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true})
+            if(payload.maker != 'maker') {
+                await connection.execute(queryDB,  [], { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true})
+            }
 
         } catch (err) {
             console.error(err.message);

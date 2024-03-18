@@ -14,7 +14,7 @@ const pool2 = new Pool({
   user: 'tekinfo',
   host: '170.1.70.67',
   database: 'ediscount',
-  password: 'Jakarta!@#09876',
+  password: 'apps2022!',
   port: 5432,
 })
 
@@ -24,6 +24,12 @@ const oracle = {
   connectString: "NUSINDO38"
 }
 
+const oracle2 = {
+  user: "RN",
+  password: "RNNUS",
+  connectString: "NUSINDO49"
+}
+
 const pubsub = new PubSub(pool2)
 
-module.exports = { pool, pool2, pubsub, oracle};
+module.exports = { pool, pool2, pubsub, oracle, oracle2};
