@@ -48,9 +48,9 @@ async function postDTMS(payload) {
     try {
         connection = await oracledb.getConnection(db.oracle2)
 
-        // if(payload.maker != 'maker') {
+        if(payload.maker != 'maker') {
             await connection.execute(queryDB,  [], { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true})
-        // }
+        }
 
     } catch (err) {
         console.error(err.message);
